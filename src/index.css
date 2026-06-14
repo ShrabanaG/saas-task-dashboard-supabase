@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+/* Brand palette — these become utility classes (bg-brand, text-brand-dark, etc.)
+   available everywhere in the app. Change a value here and the whole app re-themes. */
+@theme {
+  --color-brand: #16a34a;          /* green-600  — primary actions */
+  --color-brand-dark: #15803d;     /* green-700  — hover/pressed   */
+  --color-brand-darker: #14532d;   /* green-900  — text on green   */
+  --color-brand-light: #dcfce7;    /* green-100  — panel background */
+  --color-brand-surface: #f0fdf4;  /* green-50   — subtle fills     */
+}

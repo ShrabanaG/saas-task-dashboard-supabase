@@ -40,15 +40,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  async function fetchProfile(userId: string) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    setProfile(data)
+  const fetchProfile = async (userId: string) => {
+  // wait for trigger to create the profile
+  await new Promise(resolve => setTimeout(resolve, 1000))
+  
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single()
+
+  if (error) {
+    console.error('fetchProfile error:', error)
     setLoading(false)
+    return
   }
+
+  setProfile(data)
+  setLoading(false)
+}
 
   async function signOut() {
     await supabase.auth.signOut()
