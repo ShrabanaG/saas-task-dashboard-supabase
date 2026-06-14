@@ -129,6 +129,16 @@ export function Board() {
     }
   }
 
+  // status dropdown on a card → move it to the end of the chosen column
+  async function handleStatusChange(id: string, status: TaskStatus) {
+    const moving = tasks.find(t => t.id === id)
+    if (!moving || moving.status === status) return
+    const destTasks = tasks.filter(t => t.status === status)
+    const position = (destTasks[destTasks.length - 1]?.position ?? 0) + 1
+    setTasks(prev => prev.map(t => (t.id === id ? { ...t, status, position } : t))) // optimistic
+    try { await updateTask(id, { status, position }) } catch { reload() }
+  }
+
   async function handleEdit(id: string, patch: { title?: string; priority?: Task['priority'] }) {
     setTasks(prev => prev.map(t => (t.id === id ? { ...t, ...patch } : t))) // optimistic
     try { await updateTask(id, patch) } catch { reload() }
@@ -159,6 +169,7 @@ export function Board() {
             tasks={grouped[col.id]}
             onAdd={handleAdd}
             onEdit={handleEdit}
+            onChangeStatus={handleStatusChange}
             onDelete={handleDelete}
           />
         ))}

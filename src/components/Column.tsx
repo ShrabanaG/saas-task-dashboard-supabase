@@ -16,10 +16,11 @@ interface Props {
   tasks: Task[]
   onAdd: (status: TaskStatus, title: string) => void
   onEdit: (id: string, patch: { title?: string; priority?: Task['priority'] }) => void
+  onChangeStatus: (id: string, status: TaskStatus) => void
   onDelete: (id: string) => void
 }
 
-export function Column({ id, title, tasks, onAdd, onEdit, onDelete }: Props) {
+export function Column({ id, title, tasks, onAdd, onEdit, onChangeStatus, onDelete }: Props) {
   const { setNodeRef, isOver } = useDroppable({ id })
   const [adding, setAdding] = useState(false)
   const [text, setText] = useState('')
@@ -32,7 +33,7 @@ export function Column({ id, title, tasks, onAdd, onEdit, onDelete }: Props) {
   }
 
   return (
-    <section className="flex flex-col rounded-2xl bg-slate-50 p-3">
+    <section className="flex flex-col rounded-2xl border border-slate-200 bg-white p-3">
       <header className="mb-3 flex items-center gap-2 px-1">
         <span className={`h-2.5 w-2.5 rounded-full ${COLUMN_ACCENT[id]}`} />
         <h2 className="text-sm font-semibold text-slate-700">{title}</h2>
@@ -47,7 +48,13 @@ export function Column({ id, title, tasks, onAdd, onEdit, onDelete }: Props) {
       >
         <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.map(task => (
-            <TaskCard key={task.id} task={task} onEdit={onEdit} onDelete={onDelete} />
+            <TaskCard
+              key={task.id}
+              task={task}
+              onEdit={onEdit}
+              onChangeStatus={onChangeStatus}
+              onDelete={onDelete}
+            />
           ))}
         </SortableContext>
 
